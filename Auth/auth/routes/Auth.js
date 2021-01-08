@@ -2,7 +2,7 @@ import React, { useState } from  "react";
 import { authService, firebaseInstance } from "Base";
 
 const Auth =  () => {
-    const [email, setEmail] = useState("");
+    const [ID, setID] = useState("");
     const [password, setPassword ] = useState("");
     const [newAccount, setNewAccount ] = useState(true);
     const [error, setError] = useState("");
@@ -10,7 +10,7 @@ const Auth =  () => {
         const {
             target: {name,value},
         } = event;
-        if (name === "email") {
+        if (name === "ID") {
             setEmail(value);
         } else if ( name === "password" ){
             setPassword(value);
@@ -37,7 +37,7 @@ const Auth =  () => {
     return (
         <div>
             <form onSubmit={onSubmit}>
-                <input name="email" type="text" placeholder="Email" required value={email} onChange={onChange}/>
+                <input name="ID" type="text" placeholder="IDD" required value={email} onChange={onChange}/>
                 <input name="password" type="password" placeholder="Password" required value={password} onChange={onChange}/>
                 <input type="submit" value={newAccount ? "Create Account" : "Log In"} />
                 {error}

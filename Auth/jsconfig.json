@@ -1,0 +1,6 @@
+{
+    "compilerOptions": {
+        "baseUrl": "auth"
+    },
+    "include": ["auth"]
+}

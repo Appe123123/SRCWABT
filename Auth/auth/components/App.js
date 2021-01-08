@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AppRouter from "Router";
+import AppRouter from "components/Router";
 import { authService } from "Base";
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
   return (
     <>
       {init ? <AppRouter isLoggedIn={isLoggedIn}/> : "Initializing..."} 
-      <footer>&copy; {new Date().getFullYear()} Nwitter</footer>
+      <footer>SPLUG</footer>
     </>
   );
 }
