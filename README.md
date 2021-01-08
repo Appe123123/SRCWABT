@@ -1,2 +1,2 @@
 # SRCWABT
-Splug Regularmember Code Web Auto Build Tester
+Splug Regular Member Code Web Auto Build Tester
