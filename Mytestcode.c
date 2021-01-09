@@ -16,8 +16,15 @@ typedef struct User{
     struct User *next;
 }User;
 
+typedef struct status{
+    int log;
+    User user_now;
+}status;
+
+status STATUS;
+
 FILE* fileRead(void);
-void fileSave(FILE *);
+void fileSave(void);
 
 //ABOUT GAME
 void menuPrint(void);
@@ -39,11 +46,15 @@ void showChart(void);
 void setNode(FILE *);
 
 
+//temporary func
+
+void printName();
+
 
 char board[height][width];
 
-User* head = NULL;
-User* last = NULL;
+User *head = NULL;
+User *last = NULL;
 
 int main() {
     int n = 0;
@@ -57,8 +68,8 @@ int main() {
         switch (n){
             case 1:
 
-                //Login();
-                printf("LOGIN\n");
+                Login();
+                
                 break;
 
             case 2:
@@ -71,8 +82,7 @@ int main() {
 
             case 3:
 
-                //SignUp();
-                printf("3!\n");
+                SignUp();
 
                 break;
 
@@ -89,9 +99,13 @@ int main() {
                 printf("프로그램을 종료합니다.");
                 getchar();
                 system("clear");
-                //fileSave(fp);
+                fileSave();
                 exit(0);
                 
+                break;
+
+            case 6:
+                printName();
                 break;
 
             default:
@@ -127,7 +141,7 @@ void menuPrint(){
 
     //system("clear");
 
-    printf("                           ======사목게임======\n\n");
+    printf("\n\n                           ======사목게임======\n\n");
 
     printf("         <<로그인 없이도 플레이 가능!(점수는 기록되지 않아요ㅠ)>>\n\n");
     
@@ -216,4 +230,95 @@ void setNode(FILE *fp) {
 	}
 	fclose(fp);
 
+}
+
+void fileSave(void) {
+    FILE *fp = fopen("USERDATA.txt", "w");
+    if (head != NULL) {
+        while(1) {
+            User *aa = head;
+            fprintf(fp, "%s %s %s %d %d\n", aa->Name, aa->ID, aa->Password, aa->WIN, aa->LOSE);
+            if(head->next == NULL)
+                break;
+            head = head->next;
+        }
+    }
+}
+
+void Login(void) {
+    char s_id[16];
+    char s_pswd[16];
+    int check_id;
+    int check_pswd;
+
+    printf("|ID| ");
+    scanf("%s", s_id);
+    getchar();
+    printf("|PassWord| ");
+    scanf("%s", s_pswd);
+
+    User *temp = head;
+    while(temp->next != NULL) {
+        check_id = strcmp(s_id, temp->ID);
+        check_pswd = strcmp(s_pswd, temp->Password);
+        if(check_id == 0 && check_pswd == 0) {
+            printf("로그인 되었습니다.\n");
+            STATUS.log = 1;
+            STATUS.user_now = *temp;
+            return;
+        }
+        temp = temp->next;
+    }
+    printf("아이디와 비밀번호가 일치하지 않습니다.\n");
+}
+
+void SignUp(void) {
+    char s_name[10];
+    char s_id[16];
+    char s_pswd[16];
+    User *temp = head;
+    printf("|이름| ");
+    scanf(" %s", s_name);
+    printf("|ID| ");
+    scanf(" %s", s_id);
+    while(temp->next != NULL) {
+        if(strcmp(temp->ID,s_id) == 0) {
+            printf("이미 존재하는 ID입니다!");
+            return;
+        }
+        temp = temp->next;
+    }
+
+    printf("|PassWord| ");
+    scanf(" %s", s_pswd);
+
+    temp = head;
+    while(temp->next != NULL) {
+        temp = temp->next;
+    }
+
+    User *New = NULL;
+    New = (User *)malloc(sizeof(User));
+    strcpy(New->Name, s_name);
+    strcpy(New->ID, s_id);
+    strcpy(New->Password, s_pswd);
+    New->WIN = 0;
+    New->LOSE = 0;
+    New -> next = NULL;
+
+    temp->next = New;
+
+
+}
+
+void printName() {
+    int i = 1;
+    User *temp = head;
+    while(temp->next != NULL) {
+        printf("| %d | %s \n", i++, temp->Name);
+        if(temp->next == NULL) {
+            printf("NULL!\n");
+        }
+        temp = temp->next;
+    }
 }
