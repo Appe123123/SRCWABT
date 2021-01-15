@@ -6,6 +6,14 @@
 #define height 6
 #define width 7
 
+/*
+Request
+1. USER2
+2. 마지막 유저 읽지 못함
+3. 게임기능 결합
+4. 승률 순으로 정렬 기능 구현
+
+*/
 typedef struct User{
     char Name[30];
     char ID[16];
@@ -161,9 +169,9 @@ void menuPrint(){
 
 void setBoard() {
 
-    for(int i = 0;i<height;i++){
+    for(int i = 0; i<height; i++){
 
-        for(int k = 0;k<width;k++){
+        for(int k = 0; k<width; k++){
 
             board[i][k] = '_';
 
@@ -179,7 +187,7 @@ void makeBoard() {
 
     printf("                        ");
 
-    for(int i = 1;i<8;i++){
+    for(int i = 1; i<8; i++){
         
         printf("  %d ", i);
 
@@ -191,7 +199,7 @@ void makeBoard() {
 
         printf("                        ");
 
-        for(int k = 0;k<width;k++){
+        for(int k = 0; k < width; k++){
 
             printf("|_%c_",board[i][k]);
 
@@ -204,13 +212,14 @@ void makeBoard() {
 }
 
 void setNode(FILE *fp) {
-	
+	int t = 1;
 	User *tmpNode = NULL;
 	while(1) {
 		User tmp;
 		fscanf(fp, "%s %s %s %d %d",tmp.Name, tmp.ID, tmp.Password, &tmp.WIN, &tmp.LOSE);
 		if(feof(fp) != 0)
 			break;
+        printf("Reading Data %d\n", t++);
 		tmpNode = (User *)malloc(sizeof(User));
 		tmpNode->next = NULL;
 		strcpy(tmpNode->Name,tmp.Name);
@@ -254,7 +263,7 @@ void Login(void) {
     printf("|ID| ");
     scanf("%s", s_id);
     getchar();
-    printf("|PassWord| ");
+    printf("|PASSWORD| ");
     scanf("%s", s_pswd);
 
     User *temp = head;
@@ -316,9 +325,10 @@ void printName() {
     User *temp = head;
     while(temp->next != NULL) {
         printf("| %d | %s \n", i++, temp->Name);
-        if(temp->next == NULL) {
-            printf("NULL!\n");
-        }
+        
         temp = temp->next;
     }
+    if(temp->next == NULL) {
+            printf("NULL!\n");
+        }
 }
