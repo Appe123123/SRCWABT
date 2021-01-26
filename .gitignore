@@ -4,6 +4,8 @@ reated by https://www.toptal.com/developers/gitignore/api/windows,c
 ### C ###
 # Prerequisites
 *.d
+*.out
+
 
 # Object files
 *.o
