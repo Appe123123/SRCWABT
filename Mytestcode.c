@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdbool.h>
+
 
 #define height 6
 #define width 7
@@ -25,7 +27,7 @@ typedef struct User{
 }User;
 
 typedef struct status{
-    int log;
+    _Bool log;
     User user_now;
 }status;
 
@@ -47,6 +49,7 @@ int game_menuPrint(void);
 
 //About CRUD
 void Login(void);
+void Logout(void);
 void SignUp(void);
 void deleteUser(void);
 void modifyUser(void);
@@ -63,6 +66,7 @@ char board[height][width];
 
 User *head = NULL;
 User *last = NULL;
+User NONE = {"NONE", "NONE", "NONE", 0, 0};
 
 int main() {
     int n = 0;
@@ -75,8 +79,10 @@ int main() {
         getchar();
         switch (n){
             case 1:
-
-                Login();
+                if(STATUS.log == 0) 
+                    Login();
+                else
+                    Logout();
                 
                 break;
 
@@ -153,7 +159,10 @@ void menuPrint(){
 
     printf("         <<로그인 없이도 플레이 가능!(점수는 기록되지 않아요ㅠ)>>\n\n");
     
-    printf("1. 로그인\n");
+    if(STATUS.log == 0)
+        printf("1. 로그인\n");
+    else
+        printf("1. 로그아웃\n");
     
     printf("2. 게임 시작\n");
     
@@ -169,9 +178,9 @@ void menuPrint(){
 
 void setBoard() {
 
-    for(int i = 0; i<height; i++){
+    for(int i = 0; i < height; i++){
 
-        for(int k = 0; k<width; k++){
+        for(int k = 0; k < width; k++){
 
             board[i][k] = '_';
 
@@ -187,7 +196,7 @@ void makeBoard() {
 
     printf("                        ");
 
-    for(int i = 1; i<8; i++){
+    for(int i = 1; i < 8; i++){
         
         printf("  %d ", i);
 
@@ -195,7 +204,7 @@ void makeBoard() {
 
     printf("\n");
 
-    for(int i = 0;i<height;i++){
+    for(int i = 0; i < height; i++){
 
         printf("                        ");
 
@@ -219,22 +228,25 @@ void setNode(FILE *fp) {
 		fscanf(fp, "%s %s %s %d %d",tmp.Name, tmp.ID, tmp.Password, &tmp.WIN, &tmp.LOSE);
 		if(feof(fp) != 0)
 			break;
-        printf("Reading Data %d\n", t++);
+        printf("Reading %s Data %d\n",tmp.Name, t);
 		tmpNode = (User *)malloc(sizeof(User));
 		tmpNode->next = NULL;
-		strcpy(tmpNode->Name,tmp.Name);
-		strcpy(tmpNode->ID,tmp.ID);
-		strcpy(tmpNode->Password,tmp.Password);
+		strcpy(tmpNode->Name, tmp.Name);
+		strcpy(tmpNode->ID, tmp.ID);
+		strcpy(tmpNode->Password, tmp.Password);
         tmpNode->WIN = tmp.WIN;
         tmpNode->LOSE = tmp.LOSE;
-			if(head == NULL) 
-				head = tmpNode;
+			if(head == NULL) {
+			    head = tmpNode;
+                printf("  User%d is saved\n", t++);
+            }
 			else {
 				User *New = head;
 				while(New->next != NULL) {
 					New = New->next;
 				}
 				New->next = tmpNode;
+                printf("  User%d is saved\n", t++);
 			}
 	}
 	fclose(fp);
@@ -267,7 +279,7 @@ void Login(void) {
     scanf("%s", s_pswd);
 
     User *temp = head;
-    while(temp->next != NULL) {
+    while(temp != NULL) {
         check_id = strcmp(s_id, temp->ID);
         check_pswd = strcmp(s_pswd, temp->Password);
         if(check_id == 0 && check_pswd == 0) {
@@ -281,6 +293,12 @@ void Login(void) {
     printf("아이디와 비밀번호가 일치하지 않습니다.\n");
 }
 
+void Logout(void) {
+    STATUS.log = 0;
+
+    STATUS.user_now = NONE;
+    printf("로그인 되었습니다.\n");
+}
 void SignUp(void) {
     char s_name[10];
     char s_id[16];
@@ -290,7 +308,7 @@ void SignUp(void) {
     scanf(" %s", s_name);
     printf("|ID| ");
     scanf(" %s", s_id);
-    while(temp->next != NULL) {
+    while(temp != NULL) {
         if(strcmp(temp->ID,s_id) == 0) {
             printf("이미 존재하는 ID입니다!");
             return;
@@ -302,7 +320,7 @@ void SignUp(void) {
     scanf(" %s", s_pswd);
 
     temp = head;
-    while(temp->next != NULL) {
+    while(temp != NULL) {
         temp = temp->next;
     }
 
@@ -323,12 +341,12 @@ void SignUp(void) {
 void printName() {
     int i = 1;
     User *temp = head;
-    while(temp->next != NULL) {
+    while(temp != NULL) {
         printf("| %d | %s \n", i++, temp->Name);
         
         temp = temp->next;
     }
-    if(temp->next == NULL) {
+    if(temp == NULL) {
             printf("NULL!\n");
         }
 }
