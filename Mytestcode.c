@@ -11,7 +11,7 @@
 /*
 Request
 1. USER2
-2. 마지막 유저 읽지 못함
+2. 마지막 유저 읽지 못함 -> 해결
 3. 게임기능 결합
 4. 승률 순으로 정렬 기능 구현
 
@@ -58,6 +58,7 @@ void setNode(FILE *);
 
 
 //temporary func
+void Sort();
 
 void printName();
 
@@ -153,10 +154,13 @@ FILE *fileRead() {
 void menuPrint(){
 
 
-    //system("clear");
+    system("clear");
 
     printf("\n\n                           ======사목게임======\n\n");
-
+    if(STATUS.log == 0)
+        printf("\n                                                           X\n");
+    else
+        printf("\n                                                           %s\n",STATUS.user_now.ID);
     printf("         <<로그인 없이도 플레이 가능!(점수는 기록되지 않아요ㅠ)>>\n\n");
     
     if(STATUS.log == 0)
@@ -228,7 +232,7 @@ void setNode(FILE *fp) {
 		fscanf(fp, "%s %s %s %d %d",tmp.Name, tmp.ID, tmp.Password, &tmp.WIN, &tmp.LOSE);
 		if(feof(fp) != 0)
 			break;
-        printf("Reading %s Data %d\n",tmp.Name, t);
+        
 		tmpNode = (User *)malloc(sizeof(User));
 		tmpNode->next = NULL;
 		strcpy(tmpNode->Name, tmp.Name);
@@ -238,7 +242,6 @@ void setNode(FILE *fp) {
         tmpNode->LOSE = tmp.LOSE;
 			if(head == NULL) {
 			    head = tmpNode;
-                printf("  User%d is saved\n", t++);
             }
 			else {
 				User *New = head;
@@ -246,13 +249,17 @@ void setNode(FILE *fp) {
 					New = New->next;
 				}
 				New->next = tmpNode;
-                printf("  User%d is saved\n", t++);
 			}
 	}
 	fclose(fp);
 
 }
 
+void Sort() {
+    User *temp = head;
+    double WINRATE;
+
+}
 void fileSave(void) {
     FILE *fp = fopen("USERDATA.txt", "w");
     if (head != NULL) {
